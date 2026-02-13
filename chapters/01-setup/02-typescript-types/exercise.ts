@@ -4,49 +4,72 @@
  * Define the domain model types for the Task Manager API.
  */
 
-// TODO: Define the Project interface
 // Fields: id (string), name (string), description (string), ownerId (string),
 //         status ("active" | "archived"), createdAt (Date)
 export interface Project {
-  // Add fields here
+  id: string;
+  name: string;
+  description: string;
+  ownerId: string;
+  status: "active" | "archived";
+  createdAt: Date;
 }
 
-// TODO: Define the Task interface
 // Fields: id (string), projectId (string), title (string), description (string),
 //         assigneeId (string | null), status ("todo" | "in_progress" | "done"),
 //         priority ("low" | "medium" | "high"), dueDate (Date | null), createdAt (Date)
 export interface Task {
-  // Add fields here
+  id: string;
+  projectId: string;
+  title: string;
+  description: string;
+  assigneeId: string | null;
+  status: "todo" | "in_progress" | "done";
+  priority: "low" | "medium" | "high";
+  dueDate: Date | null;
+  createdAt: Date;
 }
 
-// TODO: Define the User interface
 // Fields: id (string), username (string), email (string), passwordHash (string),
 //         role ("admin" | "member"), createdAt (Date)
 export interface User {
-  // Add fields here
+  id: string;
+  username: string;
+  email: string;
+  passwordHash: string;
+  role: "admin" | "member";
+  createdAt: Date;
 }
 
-// TODO: Define the Comment interface
 // Fields: id (string), taskId (string), userId (string), content (string), createdAt (Date)
 export interface Comment {
-  // Add fields here
+  id: string;
+  taskId: string;
+  userId: string;
+  content: string;
+  createdAt: Date;
 }
 
-// TODO: Create CreateProjectInput type using Omit<Project, "id" | "createdAt">
-export type CreateProjectInput = {};
+export type CreateProjectInput = Omit<Project, "id" | "createdAt">;
 
-// TODO: Create CreateTaskInput type using Omit<Task, "id" | "createdAt">
-export type CreateTaskInput = {};
+export type CreateTaskInput = Omit<Task, "id" | "createdAt">;
 
-// TODO: Implement isValidProject type guard
 // Should check that obj is a non-null object with all required Project fields
 // and correct types (string for id/name/description/ownerId,
 // "active" or "archived" for status, Date instance for createdAt)
 export function isValidProject(obj: unknown): obj is Project {
-  throw new Error("Not implemented");
+  if (obj === null || typeof obj !== "object") return false;
+  const o = obj as Record<string, unknown>;
+  return (
+    typeof o.id === "string" &&
+    typeof o.name === "string" &&
+    typeof o.description === "string" &&
+    typeof o.ownerId === "string" &&
+    (o.status === "active" || o.status === "archived") &&
+    o.createdAt instanceof Date
+  );
 }
 
-// TODO: Implement createTaskInput factory function
 // Returns a CreateTaskInput with defaults:
 //   title: "", description: "", projectId: "", assigneeId: null,
 //   status: "todo", priority: "medium", dueDate: null
@@ -54,5 +77,14 @@ export function isValidProject(obj: unknown): obj is Project {
 export function createTaskInput(
   overrides?: Partial<CreateTaskInput>,
 ): CreateTaskInput {
-  throw new Error("Not implemented");
+  return {
+    title: "",
+    description: "",
+    projectId: "",
+    assigneeId: null,
+    status: "todo",
+    priority: "medium",
+    dueDate: null,
+    ...overrides,
+  };
 }
